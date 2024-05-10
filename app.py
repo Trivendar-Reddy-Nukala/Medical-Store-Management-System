@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 import os
 from datetime import datetime 
@@ -18,14 +17,23 @@ f4.grid_propagate(False)
 
 def show_frame(frame):
     for f in (f2, f3, f4):
-        f.grid_remove()
-    frame.grid()
+        try:
+            f.destroy()
+        except:
+            pass
+    frame = tk.Frame(master=root , background="lightgrey",width=300, height=300)
+    frame.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
 
 selected_operation = tk.IntVar()
 
 def Addmedicine() :
-    show_frame(f2)
+    # show_frame(f2)
+    global f2
+    f2 = tk.Frame(master=root , background="lightgrey",width=300, height=300)
+    f2.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+    f3.destroy()
+    f4.destroy()
     def Save_to_File():
         nonlocal Medname, Medprice, Medrow, Medcol
         name = Medname.get()
@@ -37,10 +45,10 @@ def Addmedicine() :
     m1=tk.Label(f2, text="Medicine Name")
     Medname=tk.Entry(f2)
     m2=tk.Label(f2, text="Medicine Price")
-    Medprice=tk.Entry(f2)
+    Medprice=tk.Entry(f2) 
     m3=tk.Label(f2, text="Medicine Row")
     Medrow=tk.Entry(f2)
-    m4=tk.Label(f2, text="Medicine Coloumn")
+    m4=tk.Label(f2, text="Medicine Column")
     Medcol=tk.Entry(f2)
 
     m1.pack()
@@ -56,7 +64,12 @@ def Addmedicine() :
     
 
 def Searchmedicine() :
-    show_frame(f3)
+    # show_frame(f3)
+    global f3
+    f3 = tk.Frame(master=root , background="lightgrey",width=300, height=300)
+    f3.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+    f2.destroy()
+    f4.destroy()
     def Search_From_File():
         nonlocal Medname
         name = Medname.get()
@@ -75,12 +88,15 @@ def Searchmedicine() :
     Medname.pack(padx=5, pady=10)
     submit_button.pack()
                 
-daily_amount = 0  # Ensure it's initialized outside the function at the module level.
+daily_amount = 0 
 
 def Billing():
-    global daily_amount  # Declare it as global inside the function if you intend to modify it.
-    show_frame(f4)
-    amount = 0  # Local variable for calculations within this function.
+    global daily_amount, f4
+    f4 = tk.Frame(master=root , background="lightgrey",width=300, height=300)
+    f4.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+    f3.destroy()
+    f2.destroy()
+    amount = 0  
 
     Medname = tk.StringVar()
     Sheet = tk.StringVar()
@@ -131,20 +147,12 @@ def DataAnalysis() :
 def Save_Data():
     column_name = datetime.now().strftime("%Y-%m-%d")
     file_path = 'DailyCollection.csv'
-
-    # Check if the file exists and has content to determine if headers are needed
     write_header = not os.path.exists(file_path) or os.stat(file_path).st_size == 0
-
-    # Construct a DataFrame to append
-    # Note: To append a single row, it's more straightforward to use a Series with a name
     data_to_append = pd.Series([daily_amount], index=[column_name], name=datetime.now().date())
-    
-    # When working with CSV files, it's often easier to directly append the new row if you're not modifying existing data
     with open(file_path, mode='a', newline='') as f:
         data_to_append.to_csv(f, header=write_header)
         exit
 
-    
 def1 = tk.Radiobutton(f1, text="Add New medicine", variable=selected_operation, value=1, command=Addmedicine)
 def2 = tk.Radiobutton(f1, text="Search medicine", variable=selected_operation, value=2, command=Searchmedicine)
 def3 = tk.Radiobutton(f1, text="Billing medicine", variable=selected_operation, value=3, command=Billing)
@@ -157,13 +165,8 @@ def3.pack(anchor=tk.W, padx=10, pady=5)
 def4.pack(anchor=tk.W, padx=10, pady=5)
 def5.pack(anchor=tk.W, padx=10, pady=5)
 
-
-
 f1.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 f2.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 f3.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 f4.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
-f2.grid_remove()
-f3.grid_remove()
-f4.grid_remove()
 root.mainloop()

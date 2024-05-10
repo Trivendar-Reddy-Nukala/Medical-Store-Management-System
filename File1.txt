@@ -1,4 +1,6 @@
 Dolo	45	3	2
 Vicks	20	2	1
-opara	54	5	8
+para	54	5	8
 eldofer	32	4	3
+Dolo650	50	1	4
+Crocin	24	1	9
